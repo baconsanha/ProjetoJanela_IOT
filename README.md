@@ -5,18 +5,6 @@
 
 Este projeto implementa um sistema de automação para abertura e fechamento de uma janela com base em variáveis ambientais (temperatura, umidade, chuva e luminosidade). Utiliza ESP32, sensores ambientais e um servo motor, com integração via MQTT e backend Flask com painel web.
 
-## 📋 Índice
-
-- [Visão Geral](#visão-geral)
-- [Funcionalidades](#funcionalidades)
-- [Componentes Utilizados](#componentes-utilizados)
-- [Estrutura do Projeto](#estrutura-do-projeto)
-- [Configuração e Execução](#configuração-e-execução)
-- [Lógica do Modo Automático](#lógica-do-modo-automático)
-- [Fluxo de Comunicação](#fluxo-de-comunicação)
-- [Capturas de Tela](#capturas-de-tela)
-- [Contribuições](#contribuições)
-
 ## 🔍 Visão Geral
 
 A Janela Inteligente IoT é uma solução que automatiza o controle de ventilação e iluminação natural em ambientes residenciais e comerciais. O sistema monitora continuamente as condições climáticas e controla automaticamente a abertura e fechamento da janela, proporcionando maior conforto térmico, economia de energia e proteção contra intempéries.
