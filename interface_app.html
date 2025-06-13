@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Janela Inteligente - Controle</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1a202c;
+            color: #e2e8f0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .card {
+            background-color: #2d3748;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-primary {
+            background-color: #4299e1;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        .button-primary:hover {
+            background-color: #3182ce;
+        }
+
+        .button-danger {
+            background-color: #e53e3e;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        .button-danger:hover {
+            background-color: #c53030;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: #4299e1;
+        }
+
+        input:focus+.slider {
+            box-shadow: 0 0 1px #4299e1;
+        }
+
+        input:checked+.slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center min-h-screen">
+    <div class="card p-8 max-w-md w-full text-center">
+        <h1 class="text-3xl font-bold mb-6">Janela Inteligente - Controle</h1>
+
+        <div id="status-icon" class="text-6xl mb-4">
+            <i class="fas fa-lock text-red-500"></i>
+        </div>
+        <p id="status-text" class="text-xl font-semibold mb-6">Janela Fechada</p>
+
+        <div class="flex justify-around mb-6">
+            <button id="abrir-btn" class="button-primary">Abrir</button>
+            <button id="fechar-btn" class="button-danger">Fechar</button>
+        </div>
+
+        <div class="mb-6">
+            <label for="auto-mode" class="text-lg mr-4">Modo Automático</label>
+            <label class="toggle-switch">
+                <input type="checkbox" id="auto-mode">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 text-left">
+            <div>
+                <p class="text-lg font-semibold">Temperatura:</p>
+                <p id="temperatura" class="text-2xl">-- °C</p>
+            </div>
+            <div>
+                <p class="text-lg font-semibold">Umidade:</p>
+                <p id="umidade" class="text-2xl">-- %</p>
+            </div>
+            <div>
+                <p class="text-lg font-semibold">Chovendo:</p>
+                <p id="chovendo" class="text-2xl">--</p>
+            </div>
+            <div>
+                <p class="text-lg font-semibold">Luminosidade:</p>
+                <p id="luminosidade" class="text-2xl">--</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const backendUrl = 'http://127.0.0.1:5000'; // Endereço do seu backend Flask
+
+        const statusIcon = document.getElementById('status-icon');
+        const statusText = document.getElementById('status-text');
+        const abrirBtn = document.getElementById('abrir-btn');
+        const fecharBtn = document.getElementById('fechar-btn');
+        const autoModeToggle = document.getElementById('auto-mode');
+        const temperaturaDisplay = document.getElementById('temperatura');
+        const umidadeDisplay = document.getElementById('umidade');
+        const chovendoDisplay = document.getElementById('chovendo');
+        const luminosidadeDisplay = document.getElementById('luminosidade');
+
+        async function fetchStatus() {
+            try {
+                const response = await fetch(`${backendUrl}/janela/status`);
+                const data = await response.json();
+                console.log("Status recebido:", data);
+
+                temperaturaDisplay.textContent = `${data.temperatura.toFixed(1)} °C`;
+                umidadeDisplay.textContent = `${data.umidade.toFixed(1)} %`;
+                chovendoDisplay.textContent = data.chovendo ? 'Sim' : 'Não';
+                luminosidadeDisplay.textContent = `${data.luminosidade.toFixed(0)}`;
+
+                if (data.status_janela === 'aberta') {
+                    statusIcon.innerHTML = '<i class="fas fa-lock-open text-green-500"></i>';
+                    statusText.textContent = 'Janela Aberta';
+                } else {
+                    statusIcon.innerHTML = '<i class="fas fa-lock text-red-500"></i>';
+                    statusText.textContent = 'Janela Fechada';
+                }
+
+                autoModeToggle.checked = data.modo_automatico;
+
+
+            } catch (error) {
+                console.error('Erro ao buscar status:', error);
+                statusText.textContent = 'Erro de Conexão';
+                statusIcon.innerHTML = '<i class="fas fa-exclamation-triangle text-yellow-500"></i>';
+            }
+        }
+
+        async function sendCommand(action) {
+            try {
+                const response = await fetch(`${backendUrl}/janela/comando`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ acao: action })
+                });
+                const result = await response.json();
+                console.log(result.message);
+                fetchStatus(); // Atualiza o status após enviar o comando
+            } catch (error) {
+                console.error('Erro ao enviar comando:', error);
+            }
+        }
+
+        abrirBtn.addEventListener('click', () => sendCommand('abrir'));
+        fecharBtn.addEventListener('click', () => sendCommand('fechar'));
+
+        autoModeToggle.addEventListener('change', () => {
+            const modo = autoModeToggle.checked ? 'ativar_automatico' : 'desativar_automatico';
+            sendCommand(modo);
+        });
+
+
+        // Atualiza o status a cada 2 segundos
+        setInterval(fetchStatus, 2000);
+
+        // Busca o status inicial ao carregar a página
+        fetchStatus();
+    </script>
+</body>
+
+</html>
