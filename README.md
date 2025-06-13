@@ -118,7 +118,8 @@ O sistema implementa a seguinte lógica quando o modo automático está ativado:
 
 ## 🔄 Fluxo de Comunicação
 
-![Diagrama de Arquitetura](imagens/diagrama_arquitetura.png)
+![image](https://github.com/user-attachments/assets/d2122443-c427-4a17-9ad5-2b5a6f4880e8)
+
 
 O sistema funciona com o seguinte fluxo de comunicação:
 
